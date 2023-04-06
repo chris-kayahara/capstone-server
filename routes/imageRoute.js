@@ -2,8 +2,11 @@ const express = require('express');
 const router = express.Router();
 const imageController = require('../controller/imageController');
 
-// GET all images
+// GET all images by document
 router.get('/document/:documentId', imageController.getByDocument);
+
+// GET all images by user
+router.get('/user/', imageController.getByUser);
 
 // GET a specific image by id
 router.get('/:id', imageController.getById);

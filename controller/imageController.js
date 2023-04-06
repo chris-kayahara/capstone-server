@@ -1,5 +1,8 @@
 const knex = require('knex')(require('../knexfile'));
+const jwt = require('jsonwebtoken');
 const { v4: uuid } = require('uuid');
+
+const secretKey = "58yuht4jrgkv9sdf8uht";
 
 module.exports = {
     getByDocument: async (req, res) => {
@@ -23,6 +26,49 @@ module.exports = {
                     res.status(404).json({ error: 'Images not found' });
                 } else {
                     res.status(200).json(images);
+                }
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: "Unable to get Images" });
+        }
+    },
+
+    getByUser: async (req, res) => {
+
+        // If authorization header does not exist...
+        if (!req.headers.authorization) {
+            res.status(401);
+            res.json({
+                error: "Login required"
+            });
+        }
+
+        // Get token portion of header
+        const authHeader = req.headers.authorization;
+        const token = authHeader.split(' ')[1];
+
+        try {
+            // Try verifying & decoding JWT
+            const decoded = jwt.verify(token, secretKey);
+
+            const images = await knex('images')
+                .leftJoin('documents', 'images.document_id', 'documents.id')
+                .leftJoin('users', 'documents.user_id', 'users.id')
+                .select(
+                    'images.id',
+                    'users.id as user_id',
+                    'users.email as user_email',
+                    'documents.id as document_id',
+                    'documents.title as document_title',
+                    'documents.description as document_description',
+                    'documents.updated_at as document_updated_at',
+                    'images.image_url',
+                    'images.image_order',
+                ).where({ email: decoded.email })
+                if (!images) {
+                    res.status(404).json({ error: 'Images not found' });
+                } else {
+                    res.status(200).json({ images, decoded });
                 }
         } catch (err) {
             console.error(err);

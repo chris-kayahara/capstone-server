@@ -6,11 +6,9 @@ module.exports = {
         try {
             const { sort_by = 'updated_at', order_by = 'dec' } = req.query;
             const documents = await knex('documents')
-                .leftJoin('users', 'documents.user_id', 'users.id')
                 .select(
                     'documents.id',
                     'documents.user_id',
-                    'users.first_name as first_name',
                     'documents.title',
                     'documents.description',
                     'documents.updated_at',
