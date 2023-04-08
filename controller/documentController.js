@@ -1,5 +1,8 @@
 const knex = require('knex')(require('../knexfile'));
+const jwt = require('jsonwebtoken');
 const { v4: uuid } = require('uuid');
+
+const secretKey = "58yuht4jrgkv9sdf8uht";
 
 module.exports = {
     getByUser: async (req, res) => {
@@ -45,22 +48,37 @@ module.exports = {
         }
     },
 
-    create: (req, res) => {
-        const user_id = req.body.userId;
-        const title = req.body.title;
-        const description = req.body.description;
+    create: async (req, res) => {
 
-        if (!user_id || !title || !description) {
-            return res.status(400).send('Please make sure to fill out all fields in the request');
+        // If authorization header does not exist...
+        if (!req.headers.authorization) {
+            res.status(401);
+            res.json({
+                error: "Login required"
+            });
         }
-        const id = uuid();
-        knex('documents')
-            .insert({ id, user_id, title, description })
-            .then((data) => {
-                const newDocumentURL = `/document/${data[0]}`;
-                res.status(201).location(newDocumentURL).send(newDocumentURL);
+        // Get token portion of header
+        const authHeader = req.headers.authorization;
+        const token = authHeader.split(' ')[1];
+
+        const id = req.body.document_id;
+        const title = req.body.document_title;
+        const description = req.body.document_description;
+
+        try {
+            // Try verifying & decoding JWT
+            const decoded = jwt.verify(token, secretKey);
+            const user_id = decoded.id;
+
+            const document = await knex('documents')
+                .insert({ id, user_id, title, description })
+                .then((data) => {
+                    const newDocumentURL = `/document/${id}`;
+                    res.status(201).location(newDocumentURL).send(id);
         })
-        .catch((err) => res.status(400).send(`Error creating Document: ${err}`));
+        } catch (err) {
+            res.status(400).send(`Error creating Document: ${err}`)
+        }
     },
 
     update: async (req, res) => {
