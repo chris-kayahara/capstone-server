@@ -1,8 +1,22 @@
 const knex = require('knex')(require('../knexfile'));
+
+// const upload = multer({ dest: 'images/' })
+
 const jwt = require('jsonwebtoken');
-const { v4: uuid } = require('uuid');
+
 
 const secretKey = "58yuht4jrgkv9sdf8uht";
+const API_BASE_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:8080';
+
+// const storage = multer.diskStorage({
+//     destination: function(req, file, cb) {
+//         cb(null, 'images/');
+//     },
+   
+//     filename: function(req, file, cb) {
+//         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+//     }
+// });
 
 module.exports = {
     getByDocument: async (req, res) => {
@@ -101,28 +115,44 @@ module.exports = {
         }
     },
 
-    create: (req, res) => {
-        const document_id = req.body.document_id;
-        const image_url = req.body.image_url;
-        const image_order = req.body.image_order;
-        const image_title = req.body.image_title;
-        const image_description = req.body.image_description;
-        const image_lat = req.body.image_lat;
-        const image_long = req.body.image_long;
-        const image_date = req.body.image_date;
+    // create: (req, res) => {
+    //     console.log(req.body)
+    //     const document_id = req.body.document_id;
+    //     const images = req.body.images;
 
-        if (!document_id || !image_url || !image_order || !image_title || !image_description || !image_lat || !image_long || !image_date) {
-            return res.status(400).send('Please make sure to fill out all fields in the request');
-        }
-        const id = uuid();
-        knex('images')
-            .insert({ id, document_id, image_url, image_order, image_title, image_description, image_lat, image_long, image_date })
-            .then((data) => {
-                const newImageURL = `/image/${data[0]}`;
-                res.status(201).location(newImageURL).send(newImageURL);
-        })
-        .catch((err) => res.status(400).send(`Error creating Image: ${err}`));
-    },
+
+    //     // if (!document_id || !image_url || !image_order || !image_title || !image_description || !image_lat || !image_long || !image_date) {
+    //     //     return res.status(400).send('Please make sure to fill out all fields in the request');
+    //     // }
+
+    //     for (let i = 0; i < images.length; i++) {
+    //         const id = images[i].image_id;
+    //         const image_url = `${API_BASE_URL}/images/${id}.${images[i].image_extension}`;
+    //         const image_order = images[i].image_order;
+    //         const image_title = images[i].image_title;
+    //         const image_description = images[i].image_description;
+    //         const image_lat = images[i].image_lat;
+    //         const image_long = images[i].image_long;
+    //         const image_date = images[i].image_date;
+
+    //         knex('images')
+    //             .insert({ id, document_id, image_url, image_order, image_title, image_description, image_lat, image_long, image_date })
+    //             .then((data) => {
+    //                 const newImageURL = `/image/${data[0]}`;
+    //                 res.status(201);
+    //         })
+    //         .catch((err) => res.status(400).send(`Error creating Image: ${err}`));
+    //     }
+    // },
+
+    // upload: async (req, res) => {
+    //     try {
+    //         upload.any('images');
+    //         console.log(req);
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
+    // },
 
     update: async (req, res) => {
         const { id } = req.params;

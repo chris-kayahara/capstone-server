@@ -9,7 +9,7 @@ router.get('/user/:userId', documentController.getByUser);
 router.get('/:id', documentController.getById);
 
 // POST a new document
-router.route('/').post(documentController.create);
+router.post('/', documentController.create);
 
 // PUT/update a document by id
 router.put('/:id', documentController.update);
