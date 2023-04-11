@@ -32,7 +32,7 @@ Make sure your mysql is setup,
 then
 run:
 
-`npm run db:migrate`
+`npx knex migrate:latest`
 
 `No need to seed data`
 
