@@ -32,6 +32,8 @@ Make sure your mysql is setup,
 then
 run:
 
+`npm install`
+
 `npx knex migrate:latest`
 
 `No need to seed data`
