@@ -1,6 +1,6 @@
 
-# Photo Mapper
-Photo Mapper allows users to compile images while displaying additional information, comments, and GPS locations.
+# MapBook
+MapBook allows users to compile images while displaying additional information, comments, and GPS locations.
 
 ## FRONT END REPOSITORY
 This is the front end code
