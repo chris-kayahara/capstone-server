@@ -2,8 +2,8 @@
 # MapBook
 MapBook allows users to compile images while displaying additional information, comments, and GPS locations.
 
-## FRONT END REPOSITORY
-This is the front end code
+## BACK END REPOSITORY
+This is the back end code
 
 # Links
 
